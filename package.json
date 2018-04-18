@@ -29,6 +29,7 @@
     "mongodb": "^3.0.6"
   },
   "dependencies": {
-    "filter-log": "0.0.5"
+    "express": "^4.0.0",
+    "filter-log": "^0.0.5"
   }
 }

@@ -2,8 +2,9 @@ const crypto = require('crypto');
 
 const filog = require('filter-log')
 let log = filog('webhandle-users')
-
-let integrator = function(mongodb, options, callback) {
+const _ = require('underscore')
+const AuthService = require('./auth-service')
+let integrator = function(mongodb, options) {
 	
 	options = _.extend({
 		createFirstUser: true,
@@ -15,13 +16,13 @@ let integrator = function(mongodb, options, callback) {
 		sessionFinder: function(req, res) {
 			return req.tracker
 		},
-		sessionSaver: function(req, res, session) {
-			res.track(session)
+		sessionSaver: function(req, res, session, callback) {
+			res.track(session, callback)
 		}
 		
 	}, options)
 	
-	return {
+	let integrator = {
 		authService: new AuthService(
 			_.extend(
 				{}
@@ -31,20 +32,20 @@ let integrator = function(mongodb, options, callback) {
 		createUserInfoLoader: function() {
 			return function(req, res, next) {
 				
-				res.createUserSession = function(userName) {
+				res.createUserSession = function(userName, callback) {
 					let token = {
 						name: userName,
 						expires: new Date(new Date().getTime() + (options.sessionLength))
 					}
 					let session = options.sessionFinder(req)
 					session.userToken = token
-					options.sessionSaver(req, res, session)
+					options.sessionSaver(req, res, session, callback)
 				}
 				
-				res.removeUserSession = function() {
+				res.removeUserSession = function(callback) {
 					let session = options.sessionFinder(req)
 					delete session.userToken
-					options.sessionSaver(req, res, session)
+					options.sessionSaver(req, res, session, callback)
 				}
 				
 				let session = options.sessionFinder(req)
@@ -54,7 +55,7 @@ let integrator = function(mongodb, options, callback) {
 						return next()
 					}
 					else {
-						this.authService.findUser(userToken.userName, (err, user) => {
+						integrator.authService.findUser(session.userToken.name, (err, user) => {
 							if(user && user.enabled) {
 								req.user = user
 							}
@@ -71,6 +72,8 @@ let integrator = function(mongodb, options, callback) {
 			}
 		}
 	}
+	
+	return integrator
 }
 
 

@@ -8,7 +8,7 @@ const User = require('./user')
 class AuthService {
 	constructor(options) {
 		options = options || {}
-		this.iterations = options.iterations || 1;
+		this.iterations = options.iterations || 156;
 		this.salt = options.salt || 'two may keep it if one is dead';
 		this.algorithm = options.algorithm || 'sha256'
 		this.mongoCollection = options.mongoCollection
@@ -53,7 +53,7 @@ class AuthService {
 	}
 	
 	/*
-		
+		Callback signature is (err, user)
 	*/
 	login(name, pass, callback /* (err, user) */) {
 		this.findUser(name, (err, user) => {

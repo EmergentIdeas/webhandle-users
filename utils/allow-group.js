@@ -6,10 +6,12 @@ const AuthorizationRequired = require('../errors/authorization-required')
 const filog = require('filter-log')
 let log = filog('allow-group')
 
-let create = function(groups, handlers) {
-	let router = express.Router()
+
+
+
+let create = function(groups, router) {
 	
-	router.use(function(req, res, next) {
+	let accessFunction = function(req, res, next, fn) {
 		if(!req.user) {
 			return next(new AuthorizationRequired())
 		}
@@ -22,11 +24,22 @@ let create = function(groups, handlers) {
 		if(_.intersection(req.user.groups, groups).length == 0) {
 			return next(new AccessRequired())
 		}
-		next()
-	})
+		fn(req, res, next)
+	}
 	
-	if(handlers) {
-		router.use(handlers)
+	let rewriteHandle = (layer) => {
+		let org = layer.handle 
+		layer.handle = (req, res, next) => {
+			accessFunction(req, res, next, org)
+		}
+	}
+	
+	router.stack.forEach(rewriteHandle)
+	
+	router.stack.orgPush = router.stack.push
+	router.stack.push = function(layer) {
+		rewriteHandle(layer)
+		this.orgPush(layer)
 	}
 	
 	return router

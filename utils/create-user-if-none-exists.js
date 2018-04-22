@@ -1,5 +1,11 @@
 const User = require('../user')
-
+/**
+* @param {Object} authService
+* @param {String} name
+* @param {String} pass
+* @param {Array} groups
+* @param {Function} callback (err, user)
+*/
 let createUserIfNoneExists = function(authService, name, pass, groups, callback) {
 	
 	authService.findUser(name, (err, user) => {

@@ -7,14 +7,11 @@ const AuthService = require('./auth-service')
 let integrator = function(mongodb, options) {
 	
 	options = _.extend({
-		createFirstUser: true,
-		firstUserName: 'administrator',
-		firstUserPassword: 'hicEasBimAv8',
 		usersCollectionName: 'webhandleusers_users',
 		// session length in milliseconds
 		sessionLength: 30 * 24 * 60 * 60 * 1000,
 		sessionFinder: function(req, res) {
-			return req.tracker
+			return req.tracker || {}
 		},
 		sessionSaver: function(req, res, session, callback) {
 			res.track(session, callback)
@@ -48,26 +45,32 @@ let integrator = function(mongodb, options) {
 					options.sessionSaver(req, res, session, callback)
 				}
 				
-				let session = options.sessionFinder(req)
-				if(session.userToken) {
-					if(session.userToken.expires < new Date()) {
-						res.removeUserSession()
-						return next()
+				try {
+					let session = options.sessionFinder(req)
+					if(session.userToken) {
+						if(session.userToken.expires < new Date()) {
+							res.removeUserSession()
+							return next()
+						}
+						else {
+							integrator.authService.findUser(session.userToken.name, (err, user) => {
+								if(user && user.enabled) {
+									req.user = user
+								}
+								else {
+									res.removeUserSession()
+								}
+								return next()
+							})
+						}
 					}
 					else {
-						integrator.authService.findUser(session.userToken.name, (err, user) => {
-							if(user && user.enabled) {
-								req.user = user
-							}
-							else {
-								res.removeUserSession()
-							}
-							return next()
-						})
+						return next()
 					}
 				}
-				else {
-					return next()
+				catch(e) {
+					log.error(e)
+					next()
 				}
 			}
 		}

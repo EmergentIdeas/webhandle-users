@@ -1,6 +1,6 @@
 {
   "name": "webhandle-users",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Webhandle auth and users module",
   "main": "index.js",
   "scripts": {
@@ -25,11 +25,12 @@
   "homepage": "https://github.com/EmergentIdeas/webhandle-users#readme",
   "devDependencies": {
     "chai": "^4.1.2",
-    "mocha": "^5.1.0",
-    "mongodb": "^3.0.6"
+    "mocha": "^5.1.1",
+    "mongodb": "^3.0.8"
   },
   "dependencies": {
+    "dreck": "^1.0.1",
     "express": "^4.0.0",
-    "filter-log": "^0.0.5"
+    "filter-log": "0.0.5"
   }
 }

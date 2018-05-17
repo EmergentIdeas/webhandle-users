@@ -1,0 +1,22 @@
+
+
+<div class="grid">
+	<div class="row">
+		<label class="t4">
+			Login name*
+			<input name="name" type="text" required="required"/>
+		</label>
+		<label class="t4">
+			Email
+			<input name="email" type="text" required="required"/>
+		</label>
+		<label class="t4">
+			Enabled
+			<select name="enabled">
+				<option value="false">false</option>
+				<option value="true">true</option>
+			</select>
+		</label>
+		
+	</div>
+</div>

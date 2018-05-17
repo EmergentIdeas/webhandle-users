@@ -1,5 +1,7 @@
 const express = require('express')
 const _ = require('underscore')
+const AccessRequired = require('../errors/access-required')
+const AuthorizationRequired = require('../errors/authorization-required')
 
 let defaults = {
 	onLogin: function(req, res, next) {
@@ -10,6 +12,12 @@ let defaults = {
 	},
 	onLoginFailed: function(req, res, next) {
 		res.redirect('/login')
+	},
+	onAuthRequired: function(req, res, next) {
+		res.redirect('/login')
+	},
+	onAccessRequired: function(req, res, next) {
+		res.redirect('/access-required')
 	}
 }
 
@@ -38,6 +46,17 @@ let create = function(authService, options) {
 		})
 		
 	})
+	
+	webhandle.routers.errorHandlers.use((err, req, res, next) => {
+		if(err instanceof AccessRequired) {
+			return options.onAccessRequired(req, res, next)
+		}
+		if(err instanceof AuthorizationRequired) {
+			return options.onAuthRequired(req, res, next)
+		}
+		next(err)
+	})
+	
 
 	return router
 }

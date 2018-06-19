@@ -1,5 +1,25 @@
 Basic code to authenticate user profiles and limit access to URLs.
 
+#Simples usage
+```
+const webhandle = require('webhandle')
+const usersSetup = require('webhandle-users/integrate-with-webhandle')
+let pretemplate = "app_pre"
+let posttemplate = "app_post"
+
+usersSetup({
+	app: webhandle, 
+	mongoDb: webhandle.dbs.myDBName.db, 
+	pretemplate: pretemplate, 
+	posttemplate: posttemplate,
+	onLogin: (req, res, next) => {
+		// This is a handle that gets run when a user successully logs in
+		res.redirect('/menu')
+	}
+})
+```
+
+
 # Authentication Service
 
 The most basic component is the AuthService which saves and verifies users. It takes

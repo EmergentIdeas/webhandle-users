@@ -1,11 +1,16 @@
 
 __::$pretemplate__
-<div class="container dreck-page">
+<div class="dreck-page">
 	<h1>__dreck.title__</h1>
+	<a href="__dreck.createUrl__">Create User</a><br/><br/>
+	
 	<table class="listing">
 		<tr>
 			<th>
 				Login
+			</th>
+			<th>
+				Name
 			</th>
 			<th>
 				Email
@@ -16,6 +21,8 @@ __::$pretemplate__
 		</tr>
 		__focus::./list-row__
 	</table>
+	<br/><br/>
+	<a href="__dreck.createUrl__">Create User</a><br/>
 	
 </div>
 __::$posttemplate__

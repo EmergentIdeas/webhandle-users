@@ -1,3 +1,4 @@
+
 const filog = require('filter-log')
 
 let log = filog('webhandle-users:User')
@@ -13,6 +14,8 @@ class User {
 		enabled:	boolean
 		failedAttemps: number
 		groups:		[string]
+		firstName:	string
+		lastName:	string
 		
 		
 	*/
@@ -22,6 +25,13 @@ class User {
 		this.groups = []
 		this.enabled = true
 		_.extend(this, options)
+	}
+	
+	isMember(group /* string */) {
+		if(!this.groups) {
+			return false
+		}
+		return this.groups.includes(group)
 	}
 }
 

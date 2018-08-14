@@ -1,8 +1,13 @@
 
 __::$pretemplate__
-<h1>__dreck.title__</h1>
-<form method="post" action="__dreck.editUrl__" class="register">
-__::./fields__
-<button type="submit">Save</button>
-</form>
+<div class="dreck-page">
+
+	<h1>__dreck.title__</h1>
+	<form method="post" action="__dreck.editUrl__" class="register">
+	__::./fields__
+
+
+	<button type="submit">Save</button>
+	</form>
+</div>
 __::$posttemplate__

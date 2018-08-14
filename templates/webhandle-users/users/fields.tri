@@ -8,14 +8,30 @@
 		</label>
 		<label class="t4">
 			Email
-			<input name="email" type="text" required="required"/>
+			<input name="email" type="text"/>
 		</label>
 		<label class="t4">
 			Enabled
 			<select name="enabled">
-				<option value="false">false</option>
 				<option value="true">true</option>
+				<option value="false">false</option>
 			</select>
+		</label>
+	</div>
+	<div class="row">
+		<label class="t4">
+			First name
+			<input name="firstName" type="text"/>
+		</label>
+		<label class="t4">
+			Last name
+			<input name="lastName" type="text"/>
+		</label>
+	</div>
+	<div class="row">
+		<label class="t6">
+			New password (leave blank for unchanged)
+			<input name="newpassword" type="text" />
 		</label>
 		
 	</div>

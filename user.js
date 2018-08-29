@@ -12,7 +12,7 @@ class User {
 		hashedPass: string
 		email:		string
 		enabled:	boolean
-		failedAttemps: number
+		failedAttempts: number
 		groups:		[string]
 		firstName:	string
 		lastName:	string
@@ -21,7 +21,7 @@ class User {
 	*/
 	
 	constructor(options) {
-		this.failedAttemps = 0
+		this.failedAttempts = 0
 		this.groups = []
 		this.enabled = true
 		_.extend(this, options)

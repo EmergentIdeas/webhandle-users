@@ -12,7 +12,7 @@ class AuthService {
 		this.salt = options.salt || 'two may keep it if one is dead';
 		this.algorithm = options.algorithm || 'sha256'
 		this.mongoCollection = options.mongoCollection
-		this.maxFailures = options.maxFailures || 40
+		this.maxFailures = options.maxFailures || 10
 	}
 
 	passHash(plainTextPass, name) {
@@ -63,15 +63,15 @@ class AuthService {
 			}
 			if(user) {
 				if(user.enabled && this.verify(user.hashedPass, pass, name)) {
-					if(user.failedAttemps > 0) {
-						user.failedAttemps = 0
+					if(user.failedAttempts > 0) {
+						user.failedAttempts = 0
 						this.save(user)
 					}
 					return callback(null, user)
 				}
 				else {
-					user.failedAttemps++
-					if(user.failedAttemps >= this.maxFailures) {
+					user.failedAttempts++
+					if(user.failedAttempts >= this.maxFailures) {
 						user.enabled = false
 					}
 					this.save(user)

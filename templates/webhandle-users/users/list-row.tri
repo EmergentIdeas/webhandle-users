@@ -9,6 +9,9 @@
 		__this.email__
 	</td>
 	<td>
+		__this.enabled__
+	</td>
+	<td>
 		<form class="delete" method="post" action="__$globals.dreck.editPrefix____this._id__/delete" onsubmit="return confirm('Delete?')" >
 			<button type="submit">&times;</button>
 		</form>

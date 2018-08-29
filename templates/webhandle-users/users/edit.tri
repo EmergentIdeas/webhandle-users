@@ -9,5 +9,10 @@ __::$pretemplate__
 
 	<button type="submit">Save</button>
 	</form>
+	
+	<br /></br/>
+	<label>
+		Failed attempts since last login: __focus.failedAttempts__
+	</label>
 </div>
 __::$posttemplate__

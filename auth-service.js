@@ -4,6 +4,8 @@ const filog = require('filter-log')
 let log = filog('webhandle-users:AuthService')
 const User = require('./user')
 
+const AuthorizationFailed = require('./errors/authorization-failed')
+
 
 class AuthService {
 	constructor(options) {
@@ -78,6 +80,25 @@ class AuthService {
 				}
 			}
 			return callback(new Error('Login failed'))
+		})
+	}
+
+	changePassword(name, oldpass, newpass, callback /* (err, user) */) {
+		this.findUser(name, (err, user) => {
+			if(err) {
+				return callback(err)
+			}
+			if(user) {
+				if(user.enabled && this.verify(user.hashedPass, oldpass, name)) {
+					this.updatePass(user, newpass)
+					this.save(user)
+					return callback(null, user)
+				}
+				else {
+					return callback(new AuthorizationFailed())
+				}
+			}
+			return callback(new AuthorizationFailed())
 		})
 	}
 	

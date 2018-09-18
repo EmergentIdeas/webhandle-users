@@ -30,6 +30,12 @@
 	</div>
 	<div class="row">
 		<label class="t6">
+			Group names
+			<input name="groupNames" type="text" />
+		</label>
+	</div>
+	<div class="row">
+		<label class="t6">
 			New password (leave blank for unchanged)
 			<input name="newpassword" type="text" />
 		</label>

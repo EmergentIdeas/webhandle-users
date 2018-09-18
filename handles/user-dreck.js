@@ -16,6 +16,13 @@ class UserDreck extends Dreck {
 				if(req.body.newpassword) {
 					wh.services.authService.updatePass(focus, req.body.newpassword)
 				}
+				if(req.body.groupNames) {
+					focus.groups = req.body.groupNames.split(',').map(entry => entry.trim()).filter(entry => !!entry)
+				}
+				else {
+					focus.groups = []
+				}
+
 				next()
 			}
 		)
@@ -23,7 +30,9 @@ class UserDreck extends Dreck {
 	}
 	
 	synchronousPostProcessor(obj) {
-		return new User(obj)
+		let u = new User(obj)
+		u.groupNames = u.groups.join(', ')
+		return u
 	}
 	
 	createTitle(focus) {

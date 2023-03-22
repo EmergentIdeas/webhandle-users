@@ -22,7 +22,8 @@ module.exports = (options) => {
 	
 	
 	let usersRouter = require('./handles/create-admin-handles')(integrator.authService, {
-		usersCollection: integrator.authService.mongoCollection,
+		usersCollection: integrator.authService.mongoUsersCollection,
+		groupsCollection: integrator.authService.mongoGroupsCollection,
 		locals: {
 			pretemplate: pretemplate,
 			posttemplate: posttemplate
@@ -33,7 +34,7 @@ module.exports = (options) => {
 		['administrators'],
 		usersRouter
 	)
-	app.routers.primary.use(securedRouter)
+	app.routers.primary.use('/admin', securedRouter)
 
 	app.addTemplateDir(path.join(app.projectRoot, 'node_modules/webhandle-users/templates'))
 
@@ -42,6 +43,9 @@ module.exports = (options) => {
 		createUserIfNoneExists: function(username, password, groups /* array */) {
 			require('./utils/create-user-if-none-exists')(integrator.authService, username, password, groups)
 			return this
-		}
+		},
+		integrator: integrator,
+		authService: integrator.authService
+
 	}
 }

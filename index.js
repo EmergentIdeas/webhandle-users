@@ -8,6 +8,7 @@ let integrator = function(mongodb, options) {
 	
 	options = _.extend({
 		usersCollectionName: 'webhandleusers_users',
+		groupsCollectionName: 'webhandleusers_groups',
 		// session length in milliseconds
 		sessionLength: 30 * 24 * 60 * 60 * 1000,
 		sessionFinder: function(req, res) {
@@ -23,7 +24,11 @@ let integrator = function(mongodb, options) {
 		authService: new AuthService(
 			_.extend(
 				{}
-				, { mongoCollection: mongodb.collection(options.usersCollectionName)}
+				, { 
+					mongoCollection: mongodb.collection(options.usersCollectionName)
+					, mongoUsersCollection: mongodb.collection(options.usersCollectionName)
+					, mongoGroupsCollection: mongodb.collection(options.groupsCollectionName)
+				}
 				, options)
 		),
 		createUserInfoLoader: function() {

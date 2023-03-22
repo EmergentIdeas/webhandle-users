@@ -3,6 +3,8 @@ const User = require('../user')
 let wh = global.webhandle
 
 const addCallbackToPromise = require('dreck/add-callback-to-promise')
+const createValuedCheckboxInjector = require('dreck/binders/create-valued-checkbox-injector')
+
 
 class UserDreck extends Dreck {
 	constructor(options) {
@@ -12,6 +14,7 @@ class UserDreck extends Dreck {
 		
 		let self = this
 		
+		this.injectors.push(createValuedCheckboxInjector('groups'))
 		this.injectors.push((req, focus, next) => {
 				if(req.body.newpassword) {
 					wh.services.authService.updatePass(focus, req.body.newpassword)
@@ -19,19 +22,25 @@ class UserDreck extends Dreck {
 				if(req.body.groupNames) {
 					focus.groups = req.body.groupNames.split(',').map(entry => entry.trim()).filter(entry => !!entry)
 				}
-				else {
-					focus.groups = []
-				}
 
 				next()
 			}
 		)
 
 	}
+
+	addAdditionalFormInformation(focus, req, res, callback) {
+		let p = new Promise(async (resolve, reject) => {
+			let groups = await wh.services.authService.fetchGroups()
+			res.locals.groups = groups
+			resolve(focus)
+		})
+		
+		return addCallbackToPromise(p, callback)
+	}
 	
 	synchronousPostProcessor(obj) {
 		let u = new User(obj)
-		u.groupNames = u.groups.join(', ')
 		return u
 	}
 	

@@ -1,0 +1,5 @@
+
+		<label class="t12">
+			<input name="groups" type="checkbox" value="__this.name::escAttr__" />
+			__this.name__
+		</label>

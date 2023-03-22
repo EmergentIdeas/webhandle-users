@@ -1,5 +1,3 @@
-
-
 <div class="grid">
 	<div class="row">
 		<label class="t4">
@@ -28,11 +26,19 @@
 			<input name="lastName" type="text"/>
 		</label>
 	</div>
+	<!--
 	<div class="row">
 		<label class="t6">
 			Group names
 			<input name="groupNames" type="text" />
 		</label>
+	</div>
+-->
+	<div class="row">
+		<div class="t12">
+			Groups 
+		</div>
+		__groups::./group-check-option__
 	</div>
 	<div class="row">
 		<label class="t6">

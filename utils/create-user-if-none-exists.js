@@ -8,7 +8,7 @@ const User = require('../user')
 */
 let createUserIfNoneExists = function(authService, name, pass, groups, callback) {
 	
-	authService.findUser(name, (err, user) => {
+	authService.findUser(name, async (err, user) => {
 		if(!err && !user) {
 			user = new User({
 				name: name
@@ -16,8 +16,16 @@ let createUserIfNoneExists = function(authService, name, pass, groups, callback)
 			
 			if(groups && typeof groups != 'function') {
 				user.groups = groups
+				let dbGroups = await authService.fetchGroups()
+				let dbGroupNames = dbGroups.map(group => group.name)
+				for(let group of groups) {
+					if(!dbGroupNames.includes(group)) {
+						authService.createGroup(group)
+					}
+				}
 			}
 			else if(typeof groups == 'function') {
+				// if "groups" is a function, this means the caller didn't sepcify and groups and it's actually the callback
 				callback = groups
 			}
 			

@@ -1,0 +1,8 @@
+<div class="grid">
+	<div class="row">
+		<label class="t4">
+			Group name*
+			<input name="name" type="text" required="required"/>
+		</label>
+	</div>
+</div>

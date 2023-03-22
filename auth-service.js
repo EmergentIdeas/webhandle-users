@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const filog = require('filter-log')
 let log = filog('webhandle-users:AuthService')
 const User = require('./user')
+const Group = require('./group')
 
 const AuthorizationFailed = require('./errors/authorization-failed')
 
@@ -14,6 +15,8 @@ class AuthService {
 		this.salt = options.salt || 'two may keep it if one is dead';
 		this.algorithm = options.algorithm || 'sha256'
 		this.mongoCollection = options.mongoCollection
+		this.mongoUsersCollection = options.mongoUsersCollection
+		this.mongoGroupsCollection = options.mongoGroupsCollection
 		this.maxFailures = options.maxFailures || 10
 	}
 
@@ -49,6 +52,17 @@ class AuthService {
 			return callback(null, null)
 		})
 		
+	}
+	
+	async fetchGroups() {
+		let groups = await this.mongoGroupsCollection.find({}).toArray()
+		
+		return groups.map(group => new Group(group))
+	}
+	async createGroup(name) {
+		let result = await this.mongoGroupsCollection.insertOne({name: name})
+		
+		return result
 	}
 	
 	save(user, callback) {

@@ -1,0 +1,22 @@
+
+__::$pretemplate__
+<div class="dreck-page">
+	<h1>__dreck.title__</h1>
+	<a href="__dreck.createUrl__">Create Group</a><br/><br/>
+	
+	<table class="listing">
+		<tr>
+			<th>
+				Group name
+			</th>
+			<th>
+				
+			</th>
+		</tr>
+		__focus::./list-row__
+	</table>
+	<br/><br/>
+	<a href="__dreck.createUrl__">Create Group</a><br/>
+	
+</div>
+__::$posttemplate__

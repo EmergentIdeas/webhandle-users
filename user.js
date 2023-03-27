@@ -5,6 +5,12 @@ let log = filog('webhandle-users:User')
 const _ = require('underscore')
 
 
+/**
+ * @class User
+ * @property name {string} The group's name
+ * @property hashedPass {string} The hash of the user's password
+ * @property email {string} The user's email
+ */
 class User {
 	// Attributes
 	/*
@@ -27,6 +33,11 @@ class User {
 		_.extend(this, options)
 	}
 	
+	/**
+	 * Determines if a user is a member of a specific group
+	 * @param {string} group The group name for test
+	 * @return boolean
+	 */
 	isMember(group /* string */) {
 		if(!this.groups) {
 			return false

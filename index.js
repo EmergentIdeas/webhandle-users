@@ -31,6 +31,11 @@ let integrator = function(mongodb, options) {
 				}
 				, options)
 		),
+
+		/**
+		 * Creates a user info loader function
+		 * @return function
+		 */
 		createUserInfoLoader: function() {
 			return function(req, res, next) {
 				

@@ -2,7 +2,6 @@
 const filog = require('filter-log')
 
 let log = filog('webhandle-users:User')
-const _ = require('underscore')
 
 /**
  * @class Group
@@ -11,7 +10,7 @@ const _ = require('underscore')
 class Group {
 	
 	constructor(options) {
-		_.extend(this, options)
+		Object.assign(this, options)
 	}
 	
 }

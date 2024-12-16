@@ -1,7 +1,7 @@
 const express = require('express')
-const _ = require('underscore')
 const UserDreck = require('./user-dreck')
 const GroupDreck = require('./group-dreck')
+const webhandle = global.webhandle
 
 let defaults = {
 
@@ -9,16 +9,18 @@ let defaults = {
 
 let create = function(authService, options) {
 	let router = express.Router()
-	options = _.extend({}, defaults, options)
+	options = Object.assign({}, defaults, options)
 	
 	let userDreck = new UserDreck({
 		mongoCollection: options.usersCollection,
 		locals: options.locals
+		, multipleAssociatedAccounts: options.multipleAssociatedAccounts  
 	})
 	
 	router.use('/user', userDreck.addToRouter(express.Router()))
 	
-	
+	webhandle.drecks = webhandle.drecks || {}
+	webhandle.drecks.user = userDreck
 	
 	let groupDreck = new GroupDreck({
 		mongoCollection: options.groupsCollection,
@@ -27,6 +29,7 @@ let create = function(authService, options) {
 	
 	router.use('/group', groupDreck.addToRouter(express.Router()))
 	
+	webhandle.drecks.group = groupDreck
 
 	// 
 	// router.get('/user-info', function(req, res, next) {

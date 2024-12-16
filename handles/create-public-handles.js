@@ -1,5 +1,4 @@
 const express = require('express')
-const _ = require('underscore')
 const AccessRequired = require('../errors/access-required')
 const AuthorizationRequired = require('../errors/authorization-required')
 
@@ -23,7 +22,7 @@ let defaults = {
 
 let create = function(authService, options) {
 	let router = express.Router()
-	options = _.extend({}, defaults, options)
+	options = Object.assign({}, defaults, options)
 	
 	router.post('/login', function(req, res, next) {
 		authService.login(req.body.name, req.body.password, (err, user) => {

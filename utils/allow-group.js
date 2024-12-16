@@ -1,10 +1,10 @@
 const express = require('express')
-const _ = require('underscore')
 const AccessRequired = require('../errors/access-required')
 const AuthorizationRequired = require('../errors/authorization-required')
 
 const filog = require('filter-log')
 let log = filog('allow-group')
+const intersection = require('./intersection')
 
 
 
@@ -21,7 +21,7 @@ let create = function(groups, router) {
 		if(typeof groups == 'string') {
 			groups = [groups]
 		}
-		if(_.intersection(req.user.groups, groups).length == 0) {
+		if(intersection(req.user.groups, groups).length == 0) {
 			return next(new AccessRequired())
 		}
 		fn(req, res, next)

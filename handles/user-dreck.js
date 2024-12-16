@@ -14,13 +14,23 @@ class UserDreck extends Dreck {
 		
 		let self = this
 		
+		this.fetchAssociatedAccounts = options.fetchAssociatedAccounts
+		this.multipleAssociatedAccounts = options.multipleAssociatedAccounts || false
+		
 		this.injectors.push(createValuedCheckboxInjector('groups'))
+		this.injectors.push(createValuedCheckboxInjector('associatedAccounts'))
 		this.injectors.push((req, focus, next) => {
 				if(req.body.newpassword) {
 					wh.services.authService.updatePass(focus, req.body.newpassword)
 				}
 				if(req.body.groupNames) {
 					focus.groups = req.body.groupNames.split(',').map(entry => entry.trim()).filter(entry => !!entry)
+				}
+				if(req.body.associatedAccounts && typeof req.body.associatedAccounts === 'string') {
+					focus.associatedAccounts = req.body.associatedAccounts.split(',').map(entry => entry.trim()).filter(entry => !!entry)
+				}
+				if(focus.associatedAccounts === '') {
+					delete focus.associatedAccounts
 				}
 
 				next()
@@ -33,6 +43,12 @@ class UserDreck extends Dreck {
 		let p = new Promise(async (resolve, reject) => {
 			let groups = await wh.services.authService.fetchGroups()
 			res.locals.groups = groups
+			res.locals.multipleAssociatedAccounts = this.multipleAssociatedAccounts 
+			
+			if(this.fetchAssociatedAccounts) {
+				res.locals.associatedAccounts = await this.fetchAssociatedAccounts()
+			}
+
 			resolve(focus)
 		})
 		

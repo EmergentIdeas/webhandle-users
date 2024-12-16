@@ -1,0 +1,4 @@
+<label class="t12">
+	<input name="associatedAccounts" type="checkbox" value="__this.id || this._id__" />
+	__this.name__
+</label>

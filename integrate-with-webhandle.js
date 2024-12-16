@@ -28,6 +28,7 @@ module.exports = (options) => {
 			pretemplate: pretemplate,
 			posttemplate: posttemplate
 		}
+		, multipleAssociatedAccounts: options.multipleAssociatedAccounts  
 	})
 
 	let securedRouter = require('./utils/allow-group')(

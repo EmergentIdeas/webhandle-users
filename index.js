@@ -2,11 +2,10 @@ const crypto = require('crypto');
 
 const filog = require('filter-log')
 let log = filog('webhandle-users')
-const _ = require('underscore')
 const AuthService = require('./auth-service')
 let integrator = function(mongodb, options) {
 	
-	options = _.extend({
+	options = Object.assign({
 		usersCollectionName: 'webhandleusers_users',
 		groupsCollectionName: 'webhandleusers_groups',
 		// session length in milliseconds
@@ -22,7 +21,7 @@ let integrator = function(mongodb, options) {
 	
 	let integrator = {
 		authService: new AuthService(
-			_.extend(
+			Object.assign(
 				{}
 				, { 
 					mongoCollection: mongodb.collection(options.usersCollectionName)

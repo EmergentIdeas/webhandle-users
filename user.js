@@ -2,7 +2,6 @@
 const filog = require('filter-log')
 
 let log = filog('webhandle-users:User')
-const _ = require('underscore')
 
 
 /**
@@ -30,7 +29,7 @@ class User {
 		this.failedAttempts = 0
 		this.groups = []
 		this.enabled = true
-		_.extend(this, options)
+		Object.assign(this, options)
 	}
 	
 	/**

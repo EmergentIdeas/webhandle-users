@@ -40,6 +40,8 @@
 		</div>
 		__groups::./group-check-option__
 	</div>
+	
+	__associatedAccounts??this::./associated-accounts-control__
 	<div class="row">
 		<label class="t6">
 			New password (leave blank for unchanged)

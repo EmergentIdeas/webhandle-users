@@ -1,6 +1,6 @@
 {
   "name": "webhandle-users",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Webhandle auth and users module",
   "main": "index.js",
   "scripts": {

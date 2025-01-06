@@ -47,10 +47,12 @@ let create = function(authService, options) {
 	})
 	
 	webhandle.routers.errorHandlers.use((err, req, res, next) => {
-		if(err instanceof AccessRequired) {
+		// Check for actual class, but also check for constructor name which can be necessary
+		// if a dependency has loaded a different file for the errors.
+		if(err instanceof AccessRequired || err.constructor.name === 'AccessRequired') {
 			return options.onAccessRequired(req, res, next)
 		}
-		if(err instanceof AuthorizationRequired) {
+		if(err instanceof AuthorizationRequired || err.constructor.name === 'AuthorizationRequired') {
 			return options.onAuthRequired(req, res, next)
 		}
 		next(err)

@@ -6,7 +6,7 @@ const User = require('./user')
 const Group = require('./group')
 
 const AuthorizationFailed = require('./errors/authorization-failed')
-
+const addCallbackToPromise = require('add-callback-to-promise')
 
 class AuthService {
 	constructor(options) {
@@ -26,96 +26,122 @@ class AuthService {
 		for (var i = 0; i < this.iterations; ++i) {
 			hash = crypto.createHmac(this.algorithm, this.salt).update(hash).digest('hex')
 		}
-		
+
 		return hash
 	}
-	
+
 	verify(cypherTextPass, plainTextPass, name) {
 		try {
 			let calculatedPass = this.passHash(plainTextPass, name)
 			return crypto.timingSafeEqual(Buffer.from(cypherTextPass, 'utf-8'), Buffer.from(calculatedPass, 'utf-8'))
 		}
-		catch(e) {
+		catch (e) {
 			log.error(e)
 			return false
 		}
 	}
-	
-	findUser(name, callback) {
-		this.mongoCollection.findOne({ name: name }, (err, found) => {
-			if(err) {
-				return callback(err)
-			}
-			if(found) {
-				return callback(null, new User(found))
-			}
-			return callback(null, null)
+
+	async findUser(name, callback) {
+		let p = new Promise((resolve, reject) => {
+			this.mongoCollection.findOne({ name: name }, (err, found) => {
+				if (err) {
+					return reject(err)
+				}
+				if (found) {
+					return resolve(new User(found))
+				}
+				return resolve()
+			})
 		})
-		
+
+		return addCallbackToPromise(p, callback)
 	}
-	
+
 	async fetchGroups() {
 		let groups = await this.mongoGroupsCollection.find({}).toArray()
-		
+
 		return groups.map(group => new Group(group))
 	}
 	async createGroup(name) {
-		let result = await this.mongoGroupsCollection.insertOne({name: name})
-		
+		let result = await this.mongoGroupsCollection.insertOne({ name: name })
+
 		return result
 	}
-	
-	save(user, callback) {
-		this.mongoCollection.save(user, callback)
+
+	async save(user, callback) {
+		let p = new Promise((resolve, reject) => {
+			this.mongoCollection.save(user, (err) => {
+				if (err) {
+					return reject(err)
+				}
+
+				return resolve()
+			})
+		})
+
+		return addCallbackToPromise(p, callback)
 	}
-	
+
 	/*
 		Callback signature is (err, user)
 	*/
-	login(name, pass, callback /* (err, user) */) {
-		this.findUser(name, (err, user) => {
-			if(err) {
-				return callback(err)
-			}
-			if(user) {
-				if(user.enabled && this.verify(user.hashedPass, pass, name)) {
-					if(user.failedAttempts > 0) {
-						user.failedAttempts = 0
-						this.save(user)
+	async login(name, pass, callback /* (err, user) */) {
+		let p = new Promise(async (resolve, reject) => {
+			try {
+				let user = await this.findUser(name)
+				if (user) {
+					if (user.enabled && this.verify(user.hashedPass, pass, name)) {
+						if (user.failedAttempts > 0) {
+							user.failedAttempts = 0
+							await this.save(user)
+						}
+						return resolve(user)
 					}
-					return callback(null, user)
-				}
-				else {
-					user.failedAttempts++
-					if(user.failedAttempts >= this.maxFailures) {
-						user.enabled = false
+					else {
+						user.failedAttempts++
+						if (user.failedAttempts >= this.maxFailures) {
+							user.enabled = false
+						}
+						await this.save(user)
 					}
-					this.save(user)
 				}
+				let e = new Error('Login failed')
+				e.user = user
+				return reject(e)
 			}
-			return callback(new Error('Login failed'))
+			catch (e) {
+				return reject(e)
+			}
+
 		})
+
+		return addCallbackToPromise(p, callback)
 	}
 
 	changePassword(name, oldpass, newpass, callback /* (err, user) */) {
-		this.findUser(name, (err, user) => {
-			if(err) {
-				return callback(err)
-			}
-			if(user) {
-				if(user.enabled && this.verify(user.hashedPass, oldpass, name)) {
-					this.updatePass(user, newpass)
-					this.save(user)
-					return callback(null, user)
+		let p = new Promise(async (resolve, reject) => {
+			try {
+				let user = await this.findUser(name)
+				if (user) {
+					if (user.enabled && this.verify(user.hashedPass, oldpass, name)) {
+						this.updatePass(user, newpass)
+						await this.save(user)
+						return resolve(user)
+					}
+					else {
+						return reject(new AuthorizationFailed())
+					}
 				}
-				else {
-					return callback(new AuthorizationFailed())
-				}
+				return reject(new AuthorizationFailed())
+
 			}
-			return callback(new AuthorizationFailed())
+			catch (e) {
+				return reject(e)
+			}
 		})
+		return addCallbackToPromise(p, callback)
 	}
-	
+
 	/*
 		Updates hash, does not save
 	*/

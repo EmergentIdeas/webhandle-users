@@ -1,6 +1,6 @@
 {
   "name": "webhandle-users",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Webhandle auth and users module",
   "main": "index.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "mongodb": "^3.1.1"
   },
   "dependencies": {
+    "add-callback-to-promise": "^1.0.2",
     "dreck": "^1.0.20",
     "express": "^4.0.0",
     "filter-log": "^1.0.10",

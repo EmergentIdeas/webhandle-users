@@ -6,6 +6,8 @@
 	<div class="t12" style="max-height: 300px; overflow: auto;">
 	__multipleAssociatedAccounts??associatedAccounts::./associated-account-check-option__
 	</div>
+	<div class="t12">
 	__this.multipleAssociatedAccounts == false??this::./associated-account-select__
+	</div>
 	<br>
 </div>

@@ -9,6 +9,7 @@ module.exports = (options) => {
 		onLogin = (req, res, next) => {
 			res.redirect('/menu')
 		}
+		, addTemplatesDirectory = true
 	} = options
 	
 	
@@ -37,7 +38,9 @@ module.exports = (options) => {
 	)
 	app.routers.primary.use('/admin', securedRouter)
 
-	app.addTemplateDir(path.join(app.projectRoot, 'node_modules/webhandle-users/templates'))
+	if(addTemplatesDirectory) {
+		app.addTemplateDir(path.join(app.projectRoot, 'node_modules/webhandle-users/templates'))
+	}
 
 
 	return {

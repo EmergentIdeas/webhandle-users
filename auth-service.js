@@ -90,7 +90,7 @@ class AuthService {
 			try {
 				let user = await this.findUser(name)
 				if (user) {
-					if (user.enabled && this.verify(user.hashedPass, pass, name)) {
+					if ((user.enabled === true || user.enabled === 'true') && this.verify(user.hashedPass, pass, name)) {
 						if (user.failedAttempts > 0) {
 							user.failedAttempts = 0
 							await this.save(user)

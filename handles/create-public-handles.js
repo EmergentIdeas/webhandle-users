@@ -22,7 +22,7 @@ let defaults = {
 
 let create = function(authService, options) {
 	let router = express.Router()
-	options = Object.assign({}, defaults, options)
+	authService.loginOptions = options = Object.assign({}, defaults, options)
 	
 	router.post('/login', function(req, res, next) {
 		authService.login(req.body.name, req.body.password, (err, user) => {

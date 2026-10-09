@@ -100,6 +100,12 @@ class AuthService {
 					else {
 						user.failedAttempts++
 						if (user.failedAttempts >= this.maxFailures) {
+							try {
+								log.warning({
+									msg: `User ${name} has failed to log in ${this.maxFailures} times.`
+								})
+							}
+							catch(e) {}
 							user.enabled = false
 						}
 						await this.save(user)
